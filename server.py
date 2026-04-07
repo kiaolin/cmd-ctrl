@@ -1,7 +1,7 @@
 import socket
 import subprocess
 
-HOST = '10.0.2.15'
+HOST = '10.0.2.5'
 PORT = 4444
 PASSWORD = "iloveboosters"
 client = None
