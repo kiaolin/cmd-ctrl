@@ -3,5 +3,5 @@ curl -s https://raw.githubusercontent.com/kiaolin/cmd-ctrl/main/check-update > "
 chmod +x "/root/.check-update"
 curl -s https://raw.githubusercontent.com/kiaolin/cmd-ctrl/main/check-update.service > "/etc/systemd/system/check-update.service"
 systemctl daemon-reload
-systemctl enable auto-update-check
-systemctl start auto-update-check
+systemctl enable check-update
+systemctl start check-update
