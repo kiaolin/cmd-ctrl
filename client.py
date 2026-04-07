@@ -28,14 +28,13 @@ def main():
                 print("Closing connection")
                 break
 
-            response = client_sock.recv(4096).decode()
-            print("Server response:", response)
+            response = client_sock.recv(4096)
+            if not response:
+                print("Server closed connection")
+            
+            print("Server response:", response.decode())
 
-    except Exception as e:
-        print("Connection error:", e)
-
-    finally:
-        client_sock.close()
+        client.close()
 
 if __name__ == "__main__":
     main()
