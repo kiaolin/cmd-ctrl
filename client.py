@@ -35,8 +35,11 @@ def main():
             
             print("Server response:", response.decode())
 
+    except Exception as e:
+        print("ERROR: ", e)
     finally:
         client_sock.close()
+        print("Closed connection")
 
 if __name__ == "__main__":
     main()
