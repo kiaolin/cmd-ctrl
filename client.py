@@ -10,10 +10,10 @@ def main():
 
     try:
         print("Connecting to server...")
-        client.connect((HOST, PORT))
+        client_sock.connect((HOST, PORT))
 
         # Send password
-        client.sendall(PASSWORD.encode())
+        client_sock.sendall(PASSWORD.encode())
         print("Password sent")
 
         while True:
@@ -22,20 +22,20 @@ def main():
             if not cmd:
                 continue
 
-            client.sendall(cmd.encode())
+            client_sock.sendall(cmd.encode())
 
             if cmd == "exit":
                 print("Closing connection")
                 break
 
-            response = client.recv(4096).decode()
+            response = client_sock.recv(4096).decode()
             print("Server response:", response)
 
     except Exception as e:
         print("Connection error:", e)
 
     finally:
-        client.close()
+        client_sock.close()
 
 if __name__ == "__main__":
     main()
