@@ -31,6 +31,7 @@ def main():
             response = client_sock.recv(4096)
             if not response:
                 print("Server closed connection")
+                break
             
             print("Server response:", response.decode())
 
