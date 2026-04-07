@@ -4,6 +4,8 @@ import subprocess
 HOST = ''
 PORT = 4444
 PASSWORD = "iloveboosters"
+client = None
+client_addr = None
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server.bind((HOST, PORT))
@@ -12,7 +14,6 @@ def login():
     print('Server running, listening for connection')
     server.listen(1)
 
-    global client, client_addr
     client, client_addr = server.accept()
     print('Connection established from', client_addr)
 
