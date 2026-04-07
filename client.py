@@ -35,7 +35,7 @@ def main():
             print("Server response:", response.decode())
 
     finally:
-        client.close()
+        client_sock.close()
 
 if __name__ == "__main__":
     main()
