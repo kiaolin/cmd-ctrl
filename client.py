@@ -34,6 +34,7 @@ def main():
             
             print("Server response:", response.decode())
 
+    finally:
         client.close()
 
 if __name__ == "__main__":
