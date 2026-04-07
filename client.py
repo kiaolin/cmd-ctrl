@@ -1,7 +1,7 @@
 import socket
 import subprocess
 
-HOST = '10.0.2.5'   # change to your VM IP
+HOST = '10.0.2.15'   # change to your VM IP
 PORT = 4444
 PASSWORD = "iloveboosters"
 
