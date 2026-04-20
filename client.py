@@ -1,7 +1,7 @@
 from getpass import getpass
 import socket
 
-REMOTE_HOST = "SERVER_IP_HERE"
+REMOTE_HOST = "10.0.2.5"
 REMOTE_PORT = 4444
 
 client = socket.socket()
