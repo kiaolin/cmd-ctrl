@@ -1,45 +1,40 @@
+# Imports
+from ctypes.wintypes import INT
+from getpass import getpass
 import socket
 import subprocess
 
-HOST = '10.0.2.15'   # change to your VM IP
-PORT = 4444
-PASSWORD = "iloveboosters"
+# Set up IP and sockets
+REMOTE_HOST = '10.0.2.5'
+REMOTE_PORT = 4444
+client = socket.socket()
 
-def main():
-    client_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+# Initialize connection
+print("[-] Connection Initiating...")
+client.connect((REMOTE_HOST, REMOTE_PORT))
+print("[-] Connection initiated!")
 
-    try:
-        print("Connecting to server...")
-        client_sock.connect((HOST, PORT))
+password = getpass()
+client.send(password.encode())
 
-        # Send password
-        client_sock.sendall(PASSWORD.encode())
-        print("Password sent")
+# Runtime loop
+while True:
+        command = input('Enter Command: ')
+        while command == '':
+                command = input('Enter Command: ')
 
-        while True:
-            cmd = input("Enter command (or 'exit'): ").strip()
+        command = command.encode()
 
-            if not cmd:
-                continue
+        client.send(command)
 
-            client_sock.sendall(cmd.encode())
-
-            if cmd == "exit":
-                print("Closing connection")
+        if command == b'exit':
                 break
 
-            response = client_sock.recv(4096)
-            if not response:
-                print("Server closed connection")
-                break
-            
-            print("Server response:", response.decode())
+        output = client.recv(1024)
+        output = output.decode()
+        if output == 'no stdout':
+                print()
+        else:
+                print(output)
 
-    except Exception as e:
-        print("ERROR: ", e)
-    finally:
-        client_sock.close()
-        print("Closed connection")
-
-if __name__ == "__main__":
-    main()
+client.close()
